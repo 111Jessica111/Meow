@@ -116,14 +116,12 @@ public class PostActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     public void onClick(View v) {
         //判断是否点击添加照片
-        if (v.getId() == R.id.post_image1) {
-            choosePhotoInPhone();
-
-        } else if (v.getId() == R.id.post_image2) {
-            choosePhotoInPhone();
-
-        } else if (v.getId() == R.id.post_image3) {
-            choosePhotoInPhone();
+        if (v.getId() == R.id.post_image1 || v.getId() == R.id.post_image2 || v.getId() == R.id.post_image3){
+            if (post_image1.getDrawable() == null || post_image2.getDrawable() == null || post_image3.getDrawable() == null){
+                choosePhotoInPhone();
+            }else {
+                Toast.makeText(this,"You have already add three photo!",Toast.LENGTH_SHORT).show();
+            }
         }
     }
 
