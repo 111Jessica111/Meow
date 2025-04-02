@@ -89,10 +89,11 @@
                         android:layout_height="120dp"
                         android:layout_weight="1"
                         android:background="@drawable/post_background"
-                        android:src="@mipmap/post_cat"
+                        android:scaleType="fitCenter"
                         />
 
                     <ImageView
+                        android:visibility="invisible"
                         android:id="@+id/post_image2"
                         android:layout_marginRight="2dp"
                         android:layout_marginLeft="2dp"
@@ -100,17 +101,16 @@
                         android:layout_height="120dp"
                         android:layout_weight="1"
                         android:background="@drawable/post_background"
-                        android:src="@mipmap/post_cat"
                         />
 
                     <ImageView
+                        android:visibility="invisible"
                         android:id="@+id/post_image3"
                         android:layout_marginLeft="2dp"
                         android:layout_width="0dp"
                         android:layout_height="120dp"
                         android:layout_weight="1"
                         android:background="@drawable/post_background"
-                        android:src="@mipmap/post_cat"
                         />
 
                 </androidx.appcompat.widget.LinearLayoutCompat>

@@ -1,26 +1,43 @@
 package com.example.meow;
 
 import android.app.Dialog;
+import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+import android.Manifest;
+import android.widget.Toast;
+import android.widget.Toolbar;
 
-public class PostActivity extends AppCompatActivity {
+import java.net.URI;
+
+
+public class PostActivity extends AppCompatActivity implements View.OnClickListener {
 
     private ImageButton btn_back;
     private EditText post_writing;
+    private ImageView post_image1;
+    private ImageView post_image2;
+    private ImageView post_image3;
+
+    public static final int CHOOSE_PHOTO = 2;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,6 +47,11 @@ public class PostActivity extends AppCompatActivity {
 
         btn_back = findViewById(R.id.btn_back);
         post_writing = findViewById(R.id.post_writing);
+
+        //照片获取
+        post_image1 = findViewById(R.id.post_image1);
+        post_image2 = findViewById(R.id.post_image2);
+        post_image3 = findViewById(R.id.post_image3);
 
         //SharedPreference数据显示
         SharedPreferences sharedPreferences = getSharedPreferences("post",MODE_PRIVATE);
@@ -84,5 +106,75 @@ public class PostActivity extends AppCompatActivity {
                 });
             }
         });
+
+        //设置照片监听
+        post_image1.setOnClickListener(this);
+        post_image2.setOnClickListener(this);
+        post_image3.setOnClickListener(this);
+    }
+
+    @Override
+    public void onClick(View v) {
+        //判断是否点击添加照片
+        if (v.getId() == R.id.post_image1) {
+            choosePhotoInPhone();
+
+        } else if (v.getId() == R.id.post_image2) {
+            choosePhotoInPhone();
+
+        } else if (v.getId() == R.id.post_image3) {
+            choosePhotoInPhone();
+        }
+    }
+
+    private void choosePhotoInPhone() {
+        //判断是否有访问权限
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_MEDIA_IMAGES) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_MEDIA_IMAGES}, CHOOSE_PHOTO);
+        } else {//权限已被授予，启动选择照片的Intent
+            JumpToAlbum();
+        }
+    }
+    //打开相册
+    private void JumpToAlbum() {
+        Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        startActivityForResult(intent,CHOOSE_PHOTO);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults, int deviceId) {
+        if (requestCode == CHOOSE_PHOTO) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                //权限被授予，执行选择照片的操作
+                JumpToAlbum();
+            } else {
+                //权限被拒绝，处理相应逻辑
+                Toast.makeText(this,"You denied the permission",Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == CHOOSE_PHOTO && resultCode == RESULT_OK && data != null) {
+            Uri selectImageUri = data.getData();
+            if (selectImageUri != null) {
+                if (post_image1.getDrawable() == null) {
+                    post_image1.setImageURI(selectImageUri);
+                    post_image1.setBackgroundColor(Color.WHITE);
+                    post_image2.setVisibility(View.VISIBLE);
+                } else if (post_image1.getDrawable() != null && post_image2.getDrawable() == null) {
+                    post_image2.setVisibility(View.VISIBLE);
+                    post_image2.setImageURI(selectImageUri);
+                    post_image2.setBackgroundColor(Color.WHITE);
+                    post_image3.setVisibility(View.VISIBLE);
+                } else if (post_image2.getDrawable() != null && post_image3.getDrawable() == null) {
+                    post_image3.setVisibility(View.VISIBLE);
+                    post_image3.setImageURI(selectImageUri);
+                    post_image3.setBackgroundColor(Color.WHITE);
+                }
+            }
+        }
     }
 }
