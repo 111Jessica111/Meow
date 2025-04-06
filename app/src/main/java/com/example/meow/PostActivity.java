@@ -11,6 +11,7 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -40,6 +41,7 @@ public class PostActivity extends AppCompatActivity implements View.OnClickListe
     public static final int CHOOSE_PHOTO = 2;
     private RelativeLayout btn_tag;
     private RelativeLayout btn_locate;
+    private RelativeLayout btn_link;
     private ImageView tag_dot;
     private TextView tag_content;
 
@@ -55,6 +57,7 @@ public class PostActivity extends AppCompatActivity implements View.OnClickListe
         tag_dot = findViewById(R.id.tag_dot);
         tag_content = findViewById(R.id.tag_content);
         btn_locate = findViewById(R.id.btn_locate);
+        btn_link = findViewById(R.id.btn_link);
 
         //照片获取
         post_image1 = findViewById(R.id.post_image1);
@@ -171,6 +174,23 @@ public class PostActivity extends AppCompatActivity implements View.OnClickListe
             @Override
             public void onClick(View v) {
 
+            }
+        });
+
+        //设置发布权限
+        btn_link.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Dialog dialog = new Dialog(PostActivity.this);
+                dialog.getWindow().setBackgroundDrawable(new ColorDrawable(
+                        Color.TRANSPARENT
+                ));
+
+                dialog.setContentView(R.layout.post_link);
+                dialog.show();
+
+                CheckBox link_public = dialog.findViewById(R.id.link_public);
+                CheckBox link_private = dialog.findViewById(R.id.link_private);
             }
         });
     }
